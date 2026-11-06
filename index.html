@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Srikanth Laboratory Blood Reporting System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- =========================================
+     LABORATORY INTRO
+========================================= -->
+
+<div id="intro-screen" class="intro-screen">
+
+    <video id="intro-video"
+           class="intro-video"
+           autoplay
+           muted
+           playsinline
+           preload="auto">
+
+        <source src="assets/intro.mp4" type="video/mp4">
+
+    </video>
+
+    <div class="intro-overlay">
+
+        <div class="intro-content">
+
+            <div class="intro-logo">⚗</div>
+
+            <h1>Srikanth Laboratory</h1>
+
+            <p>Diagnostic Report System</p>
+
+            <div class="intro-loader"></div>
+
+        </div>
+
+    </div>
+
+    <button class="skip-intro" onclick="skipIntro()">
+        Skip Intro →
+    </button>
+
+</div>
+
+
+<!-- =========================================
+     TOAST NOTIFICATION
+========================================= -->
+
+<div class="toast" id="toast"></div>
+
+
+<!-- =========================================
+     DASHBOARD
+========================================= -->
+
+<div class="screen active" id="screen-dashboard">
+
+    <div class="topbar">
+
+        <div class="logo">
+
+            <div class="logo-icon">⚗</div>
+
+            <div>
+                <h1>Srikanth Laboratory</h1>
+                <p>Diagnostic Report System</p>
+            </div>
+
+        </div>
+
+        <div class="topbar-r">
+
+            <button class="btn btn-primary" onclick="goNew()">
+                ＋ New Report
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="main">
+
+        <!-- Dashboard Statistics -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-ic ic-teal">📄</div>
+
+                <div>
+                    <div class="stat-val" id="s-total">0</div>
+                    <div class="stat-lbl">Total Reports</div>
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-ic ic-violet">👥</div>
+
+                <div>
+                    <div class="stat-val" id="s-pts">0</div>
+                    <div class="stat-lbl">Patients</div>
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-ic ic-rose">📅</div>
+
+                <div>
+                    <div class="stat-val" id="s-month">0</div>
+                    <div class="stat-lbl">This Month</div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Search -->
+
+        <div class="search-box">
+
+            <span class="search-icon">🔍</span>
+
+            <input
+                id="q"
+                type="text"
+                placeholder="Search by patient name or ID..."
+                oninput="renderTable()"
+            />
+
+        </div>
+
+
+        <!-- Reports Table -->
+
+        <div class="card" id="tbl-wrap"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     REPORT EDITOR
+========================================= -->
+
+<div class="screen" id="screen-editor">
+
+    <div class="topbar">
+
+        <div class="editor-left">
+
+            <button class="btn btn-secondary" onclick="showDash()">
+                ← Back
+            </button>
+
+            <span class="separator">|</span>
+
+            <span class="editor-title" id="ed-title">
+                New Report
+            </span>
+
+        </div>
+
+
+        <div class="topbar-r">
+
+            <button
+                class="btn btn-secondary"
+                id="save-btn"
+                onclick="doSave()">
+
+                💾 Save
+
+            </button>
+
+            <button class="btn btn-primary" onclick="doPrint()">
+                🖨 Print Preview
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="main">
+
+        <!-- Quick Templates -->
+
+        <div class="sc">
+
+            <div class="sc-title">
+                Quick Templates
+            </div>
+
+            <div id="tpls" class="template-list"></div>
+
+        </div>
+
+
+        <!-- Patient Information -->
+
+        <div class="sc">
+
+            <div class="sc-title">
+                <span class="bar bar-teal"></span>
+                Patient Information
+            </div>
+
+
+            <div class="grid3">
+
+                <div class="fld">
+
+                    <label>Patient Name</label>
+
+                    <input
+                        id="f-name"
+                        type="text"
+                        placeholder="Full name"
+                    />
+
+                </div>
+
+
+                <div class="fld">
+
+                    <label>Patient ID</label>
+
+                    <input
+                        id="f-id"
+                        type="text"
+                        placeholder="e.g. 8119"
+                    />
+
+                </div>
+
+
+                <div class="fld">
+
+                    <label>Age</label>
+
+                    <input
+                        id="f-age"
+                        type="number"
+                        placeholder="Years"
+                    />
+
+                </div>
+
+
+                <div class="fld">
+
+                    <label>Gender</label>
+
+                    <select id="f-gen">
+
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="fld span2">
+
+                    <label>Referring Doctor</label>
+
+                    <input
+                        id="f-ref"
+                        type="text"
+                        placeholder="Doctor name"
+                    />
+
+                </div>
+
+
+                <div class="fld">
+
+                    <label>Sample Date</label>
+
+                    <input id="f-sdate" type="date"/>
+
+                </div>
+
+
+                <div class="fld">
+
+                    <label>Report Date</label>
+
+                    <input id="f-rdate" type="date"/>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Test Results -->
+
+        <div class="card">
+
+            <div class="card-hd">
+
+                <h2>
+                    <span class="bar bar-violet"></span>
+                    Test Results
+                </h2>
+
+                <button
+                    class="btn btn-secondary add-row-btn"
+                    onclick="addRow()">
+
+                    ＋ Add Row
+
+                </button>
+
+            </div>
+
+
+            <div class="table-scroll">
+
+                <table class="rtable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Description</th>
+
+                            <th class="result-col">Result</th>
+
+                            <th class="unit-col">Units</th>
+
+                            <th>Normal Range</th>
+
+                            <th class="remove-col"></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="rows-body"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="tfoot-row" id="row-cnt">
+                0 rows
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     PRINT PREVIEW
+========================================= -->
+
+<div class="screen" id="screen-preview">
+
+    <div class="topbar preview-bar">
+
+        <div class="editor-left">
+
+            <button
+                class="btn btn-secondary"
+                onclick="showScreen('editor')">
+
+                ← Back to Editor
+
+            </button>
+
+            <span class="separator">|</span>
+
+            <span class="preview-title">
+
+                Print Preview —
+
+                <b id="prev-name"></b>
+
+            </span>
+
+        </div>
+
+
+        <div class="topbar-r">
+
+            <span class="print-warning">
+                ⚠ Prints on pre-printed stationery
+            </span>
+
+            <button class="btn btn-primary" onclick="window.print()">
+
+                🖨 Print Now
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="preview-wrap">
+
+        <div class="a4" id="parea">
+
+            <!-- Patient Information -->
+
+            <table class="ptable">
+
+                <tbody>
+
+                    <tr>
+
+                        <td style="width:50%">
+
+                            <b>Name</b> :
+
+                            <span id="p-name"></span>
+
+                        </td>
+
+                        <td>
+
+                            <b>Sex</b> :
+
+                            <span id="p-sex"></span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+
+                            <b>Date</b> :
+
+                            <span id="p-date"></span>
+
+                        </td>
+
+                        <td>
+
+                            <b>Age</b> :
+
+                            <span id="p-age"></span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+
+                            <b>Ref by</b> :
+
+                            <span id="p-ref"></span>
+
+                        </td>
+
+                        <td>
+
+                            <b>ID No</b> :
+
+                            <span id="p-id"></span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <!-- Test Results -->
+
+            <table class="print-tbl">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Description</th>
+
+                        <th class="r">Result</th>
+
+                        <th class="u">Units</th>
+
+                        <th class="nr">Normal Range</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="p-rows"></tbody>
+
+            </table>
+
+
+            <!-- Lab Technician -->
+
+            <div class="lab-tech">
+                Lab Tech
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
